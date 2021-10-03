@@ -10,17 +10,14 @@ export const utils = {
         return window.location.origin;
     },
     provisionNewUser: async (userId) => {
-        let response = await fetch('/tokens/provisionUser', {
-            method: 'POST',
-            body: { userId },
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
-        });
 
-        if (response.ok) {
-            return response.json();
+        const tokenUrl = 'https://ucs-acs-tokens.azurewebsites.net/api/GetACSToken?code=jh7zsgJlspF8sCXc2Q5U6bU88zV2NJBydz4MXJPJv5klGhs45CZdTA=='
+
+        const response = await fetch(tokenUrl)
+        const parsedResponse = await response.json()
+
+        if (parsedResponse) {
+            return parsedResponse.value
         }
 
         throw new Error('Invalid token response');
@@ -37,7 +34,9 @@ export const utils = {
         } else {
             return 'Unknown Identifier';
         }
+
     },
+
     getRemoteParticipantObjFromIdentifier(call, identifier) {
         switch(identifier.kind) {
             case 'communicationUser': {
